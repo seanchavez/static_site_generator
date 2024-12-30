@@ -1,5 +1,5 @@
 class HTMLNode:
-    def _init__(self, tag=None, value=None, children=None, props=None):
+    def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
         self.value = value
         self.children = children
@@ -9,6 +9,8 @@ class HTMLNode:
         raise NotImplementedError
 
     def props_to_html(self):
+        if not self.props:
+            return ""
         html_attributes = ""
         for prop in self.props:
             html_attributes += f" {prop}={self.props[prop]}"
