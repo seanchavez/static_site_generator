@@ -1,60 +1,56 @@
 import unittest
 from textnode import TextNode, TextType
 from leafnode import LeafNode
-from text_to_html import text_node_to_html_node
+from text_node_to_html_node import text_node_to_html_node
 
 
 class TestTextNodeToHtmlNode(unittest.TestCase):
-    def test_text_type_text(self):
-        text_node = TextNode(text="Hello", text_type=TextType.NORMAL)
+    def test_normal_text(self):
+        text_node = TextNode("Hello", TextType.NORMAL)
         html_node = text_node_to_html_node(text_node)
-        self.assertIsInstance(html_node, LeafNode)
-        self.assertIsNone(html_node.tag)
+        self.assertEqual(html_node.tag, None)
         self.assertEqual(html_node.value, "Hello")
+        self.assertIsNone(html_node.props)
 
-    def test_text_type_bold(self):
-        text_node = TextNode(text="Bold Text", text_type=TextType.BOLD)
+    def test_bold_text(self):
+        text_node = TextNode("Bold", TextType.BOLD)
         html_node = text_node_to_html_node(text_node)
         self.assertEqual(html_node.tag, "b")
-        self.assertEqual(html_node.value, "Bold Text")
+        self.assertEqual(html_node.value, "Bold")
+        self.assertIsNone(html_node.props)
 
-    def test_text_type_italic(self):
-        text_node = TextNode(text="Italic Text", text_type=TextType.ITALIC)
+    def test_italic_text(self):
+        text_node = TextNode("Italic", TextType.ITALIC)
         html_node = text_node_to_html_node(text_node)
         self.assertEqual(html_node.tag, "i")
-        self.assertEqual(html_node.value, "Italic Text")
+        self.assertEqual(html_node.value, "Italic")
+        self.assertIsNone(html_node.props)
 
-    def test_text_type_code(self):
-        text_node = TextNode(text="Code Snippet", text_type=TextType.CODE)
+    def test_code_text(self):
+        text_node = TextNode("Code", TextType.CODE)
         html_node = text_node_to_html_node(text_node)
         self.assertEqual(html_node.tag, "code")
-        self.assertEqual(html_node.value, "Code Snippet")
+        self.assertEqual(html_node.value, "Code")
+        self.assertIsNone(html_node.props)
 
-    def test_text_type_link(self):
-        text_node = TextNode(
-            text="OpenAI", text_type=TextType.LINK, url="https://openai.com"
-        )
+    def test_link_text(self):
+        text_node = TextNode("Example", TextType.LINK, "https://example.com")
         html_node = text_node_to_html_node(text_node)
         self.assertEqual(html_node.tag, "a")
-        self.assertEqual(html_node.value, "OpenAI")
-        self.assertEqual(html_node.props, {"href": "https://openai.com"})
+        self.assertEqual(html_node.value, "Example")
+        self.assertEqual(html_node.props, {"href": "https://example.com"})
 
-    def test_text_type_image(self):
-        text_node = TextNode(
-            text="Image Alt Text",
-            text_type=TextType.IMAGE,
-            url="https://example.com/image.jpg",
-        )
+    def test_image_text(self):
+        text_node = TextNode("Image", TextType.IMAGE, "https://example.com/image.png")
         html_node = text_node_to_html_node(text_node)
         self.assertEqual(html_node.tag, "img")
         self.assertEqual(html_node.value, "")
         self.assertEqual(
-            html_node.props,
-            {"src": "https://example.com/image.jpg", "alt": "Image Alt Text"},
+            html_node.props, {"src": "https://example.com/image.png", "alt": "Image"}
         )
 
     def test_invalid_text_type(self):
-        text_node = TextNode(text="Invalid", text_type="UNKNOWN")
+        text_node = TextNode("Invalid", None)
         with self.assertRaises(ValueError):
             text_node_to_html_node(text_node)
 
