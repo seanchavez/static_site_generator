@@ -3,10 +3,6 @@ import re
 from extract_markdown_links import extract_markdown_links
 
 
-def extract_markdown_links(text):
-    return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
-
-
 class TestExtractMarkdownLinks(unittest.TestCase):
     def test_valid_links(self):
         text = "[Google](https://google.com) and [Example](https://example.com)"
