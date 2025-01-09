@@ -1,5 +1,6 @@
 import unittest
-from block_helpers import markdown_to_blocks, block_to_block_type
+from block_helpers import markdown_to_blocks, block_to_block_type, markdown_to_html_node
+from htmlnode import ParentNode, LeafNode
 
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -138,6 +139,10 @@ def hello():
             ),
             "paragraph",
         )
+
+
+class TestMarkdownToHtmlNode(unittest.TestCase):
+    pass
 
 
 if __name__ == "__main__":
