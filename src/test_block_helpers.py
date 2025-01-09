@@ -142,7 +142,78 @@ def hello():
 
 
 class TestMarkdownToHtmlNode(unittest.TestCase):
-    pass
+
+    def test_single_heading(self):
+        markdown = "# Heading 1"
+        html = markdown_to_html_node(markdown).to_html()
+        expected = ParentNode("div", [LeafNode("h1", "Heading 1")]).to_html()
+        self.assertEqual(html, expected)
+
+    def test_paragraph(self):
+        markdown = "This is a simple paragraph."
+        html = markdown_to_html_node(markdown).to_html()
+        expected = ParentNode(
+            "div", [LeafNode("p", "This is a simple paragraph.")]
+        ).to_html()
+        self.assertEqual(html, expected)
+
+    def test_quote_block(self):
+        markdown = "> This is a quote block\n> that goes on and on"
+        html = markdown_to_html_node(markdown).to_html()
+        expected = ParentNode(
+            "div", [LeafNode("blockquote", "This is a quote block that goes on and on")]
+        ).to_html()
+        self.assertEqual(html, expected)
+
+    def test_unordered_list(self):
+        markdown = "* Item 1\n* Item 2\n* Item 3"
+        html = markdown_to_html_node(markdown).to_html()
+        expected = ParentNode(
+            "div",
+            [
+                ParentNode(
+                    "ul",
+                    [
+                        LeafNode("li", "Item 1"),
+                        LeafNode("li", "Item 2"),
+                        LeafNode("li", "Item 3"),
+                    ],
+                )
+            ],
+        ).to_html()
+        self.assertEqual(html, expected)
+
+    def test_ordered_list(self):
+        markdown = "1. Item 1\n2. Item 2\n3. Item 3"
+        html = markdown_to_html_node(markdown).to_html()
+        expected = ParentNode(
+            "div",
+            [
+                ParentNode(
+                    "ol",
+                    [
+                        LeafNode("li", "Item 1"),
+                        LeafNode("li", "Item 2"),
+                        LeafNode("li", "Item 3"),
+                    ],
+                )
+            ],
+        ).to_html()
+        self.assertEqual(html, expected)
+
+    def test_code_block(self):
+        markdown = '```\ndef hello():\n    print("Hello, world!")\n```'
+        html = markdown_to_html_node(markdown).to_html()
+        expected = ParentNode(
+            "div",
+            [
+                ParentNode(
+                    "pre",
+                    [LeafNode("code", '\ndef hello():\n    print("Hello, world!")\n')],
+                )
+            ],
+        ).to_html()
+        self.assertEqual(html, expected)
 
 
 if __name__ == "__main__":
