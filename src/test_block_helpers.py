@@ -215,6 +215,30 @@ class TestMarkdownToHtmlNode(unittest.TestCase):
         ).to_html()
         self.assertEqual(html, expected)
 
+    def test_mixed_blocks(self):
+        markdown = """# Heading
+
+This is a paragraph.
+
+* List item 1
+* List item 2
+
+> Quote block
+"""
+        html = markdown_to_html_node(markdown).to_html()
+        expected = ParentNode(
+            "div",
+            [
+                LeafNode("h1", "Heading"),
+                LeafNode("p", "This is a paragraph."),
+                ParentNode(
+                    "ul", [LeafNode("li", "List item 1"), LeafNode("li", "List item 2")]
+                ),
+                LeafNode("blockquote", "Quote block"),
+            ],
+        ).to_html()
+        self.assertEqual(html, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
