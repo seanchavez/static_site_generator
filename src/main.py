@@ -1,4 +1,9 @@
-from textnode import TextNode
+from generate import copy_static
 
-dummy_node = TextNode("This is a text node", "bold", "https://www.boot.dev")
-print(dummy_node.__repr__())
+
+def main():
+    copy_static("static/", "public/")
+
+
+if __name__ == "__main__":
+    main()
