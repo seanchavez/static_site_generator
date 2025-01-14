@@ -1,4 +1,4 @@
-from os.path import exists, isfile, join, split
+from os.path import exists, isfile, join, dirname, splitext
 from os import listdir, mkdir, makedirs
 from shutil import rmtree, copy
 from block_helpers import markdown_to_html_node
@@ -31,18 +31,29 @@ def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path) as md_file:
         markdown = md_file.read()
-        print(f"MARKDOWN: {markdown}")
     with open(template_path) as tmpl_file:
         template = tmpl_file.read()
-        print(f"TEMPLATE: {template}")
     html = markdown_to_html_node(markdown).to_html()
-    print(f"HTML: {html}")
     title = extract_title(markdown)
-    print(f"TITLE: {title}")
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
-    print(f"FINAL: {template}")
-    # if not exists(dest_path):
-    #     makedirs(dest_path)
+    if not exists(dest_path):
+        makedirs(dirname(dest_path), exist_ok=True)
     with open(dest_path, "w") as dest_file:
         dest_file.write(template)
+
+
+def generate_pages_recursive(content_path, template_path, dest_path):
+    for item in listdir(content_path):
+        content_item_path = join(content_path, item)
+
+        if isfile(content_item_path):
+            generate_page(
+                content_item_path,
+                template_path,
+                join(dest_path, f"{splitext(item)[0]}.html"),
+            )
+        else:
+            generate_pages_recursive(
+                content_item_path, template_path, join(dest_path, item)
+            )
