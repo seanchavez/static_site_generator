@@ -53,15 +53,9 @@ def markdown_to_html_node(markdown):
                     )
                 )
             case "ordered_list":
-                list_items = []
-                for li in block.splitlines():
-                    list_items.append(ParentNode("li", text_to_children(li[3:])))
-                children.append(ParentNode("ol", list_items))
+                children.append(create_list_node(block, block_type))
             case "unordered_list":
-                list_items = []
-                for li in block.splitlines():
-                    list_items.append(ParentNode("li", text_to_children(li[2:])))
-                children.append(ParentNode("ul", list_items))
+                children.append(create_list_node(block, block_type))
             case "quote":
                 children.append(
                     ParentNode(
@@ -81,6 +75,19 @@ def markdown_to_html_node(markdown):
                     ParentNode("p", text_to_children(" ".join(block.splitlines())))
                 )
     return ParentNode("div", children)
+
+
+def create_list_node(md_list, list_type):
+    if list_type == "ordered_list":
+        tag, item_index = "ol", 3
+    elif list_type == "unordered_list":
+        tag, item_index = "ul", 2
+    else:
+        raise ValueError("Invalid list_type")
+    list_items = []
+    for li in md_list.splitlines():
+        list_items.append(ParentNode("li", text_to_children(li[item_index:])))
+    return ParentNode(f"{tag}", list_items)
 
 
 def get_heading_level(prefix):
